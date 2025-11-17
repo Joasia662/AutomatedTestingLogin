@@ -21,7 +21,7 @@ class LoginPage extends Page {
     }
 
     get flashCard () {
-        return $('h3[data-type="error"]');
+        return $('h3[data-test="error"]');
     }
 
     /**
