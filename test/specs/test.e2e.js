@@ -1,4 +1,7 @@
 import { expect } from '@wdio/globals'
+import { invalidUsers, validUsers } from '../data/user.js';
+
+import DashboardPage from '../pageobjects/dashboard.page.js'
 import LoginPage from '../pageobjects/login.page.js'
 
 describe('My Login application', () => {
@@ -8,38 +11,61 @@ describe('My Login application', () => {
     });
 
 
-    it('UC-1 Should display error about required username', async () => {
-        
-        await browser.url("https://www.saucedemo.com/");
-        
-        //await LoginPage.inputUsername.click();
-        await LoginPage.inputUsername.setValue('Test');
-        //await LoginPage.inputPassword.click();
-        await LoginPage.inputPassword.setValue('Test');
+    invalidUsers.forEach(user => {
+        it(`UC-1 Should display error about required username for user: ${user.username}`, async () => {
 
-    
-        await LoginPage.clearInput(LoginPage.inputUsername);
-        await LoginPage.clearInput(LoginPage.inputPassword);
+            //arrange        
+            await LoginPage.inputUsername.setValue(user.username);
+            await LoginPage.inputPassword.setValue(user.password);
 
-        //await browser.pause(5000);
-        await LoginPage.btnSubmit.click();
-        
-        await expect(LoginPage.flashCard).toBeExisting()
-        await expect(LoginPage.flashCard).toHaveText(
-            expect.stringContaining('Username is required'))
+
+            await LoginPage.clearInput(LoginPage.inputUsername);
+            await LoginPage.clearInput(LoginPage.inputPassword);
+
+            //act
+            await LoginPage.btnSubmit.click();
+
+            //assert
+            await expect(LoginPage.flashCard).toBeExisting()
+            await expect(LoginPage.flashCard).toHaveText(
+                expect.stringContaining('Username is required'))
+        })
+
+    });
+
+    invalidUsers.forEach(user => {
+        it(`UC-2 Should display error about required password for user: ${user.username}`, async () => {
+            //arrange
+            await LoginPage.inputUsername.setValue(user.username);
+            await LoginPage.inputPassword.setValue(user.password);
+            await LoginPage.clearInput(LoginPage.inputPassword);
+
+            //act
+            await LoginPage.btnSubmit.click();
+
+            //assert
+            await expect(LoginPage.flashCard).toBeExisting()
+            await expect(LoginPage.flashCard).toHaveText(
+                expect.stringContaining('Password is required'))
+
+        })
     })
 
-    it('UT-2 Should display error about required password', async()=>{
-        await LoginPage.inputUsername.setValue('Test');
-        await LoginPage.inputPassword.setValue('Test');
-        await LoginPage.clWearInput(LoginPage.inputPassword);
+    validUsers.forEach(user => {
+        it(`UC-3 Should display Swag Labs when login is successfull for user: ${user.username}`, async () => {
+            //arrange
+            await LoginPage.inputUsername.setValue(user.username);
+            await LoginPage.inputPassword.setValue(user.password);
 
-        await LoginPage.btnSubmit.click();
+            //act
+            await LoginPage.btnSubmit.click();
 
-        await expect(LoginPage.flashCard).toBeExisting()
-        await expect(LoginPage.flashCard).toHaveText(
-            expect.stringContaining('Password is required'))
+            //assert
+            await expect(DashboardPage.dashboardTitle).toBeExisting()
+            await expect(DashboardPage.dashboardTitle).toHaveText(
+                expect.stringContaining('Swag Labs'))
+        });
+    });
 
-    })
 })
 
