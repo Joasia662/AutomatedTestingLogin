@@ -43,16 +43,23 @@ export const config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 1,
+    maxInstances: 4,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
+        maxInstances: 2,
         browserName: 'chrome',
         browserVersion: 'stable'
-    }],
+        },
+        {
+            maxInstances: 2,
+            browserName: 'msedge',
+            browserVersion: 'stable'
+        },
+    ],
 
     //
     // ===================
@@ -110,7 +117,7 @@ export const config = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: 'mocha',
-    
+
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
